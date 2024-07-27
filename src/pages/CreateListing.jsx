@@ -13,8 +13,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { addDoc, serverTimestamp, collection } from "firebase/firestore";
 
-// AIzaSyAeEQEIymq1cPrsZSih-SXyjjYsXKnFehY
-
 const CreateListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const isMounted = useRef(true);
