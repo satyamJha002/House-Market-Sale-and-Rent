@@ -51,7 +51,6 @@ const Listing = () => {
                 backgroundPosition: "absolute",
                 width: "100%",
                 height: "400px",
-                borderRadius: "100px",
                 marginRight: "30px",
               }}
             ></div>
