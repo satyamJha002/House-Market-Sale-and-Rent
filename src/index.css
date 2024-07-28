@@ -93,7 +93,7 @@ button {
 .listingDetails,
 .category,
 .explore {
-  margin: 1rem;
+  margin: 2rem;
 }
 @media (min-width: 1024px) {
   .pageContainer,
@@ -224,7 +224,7 @@ button {
 
 .signInBar,
 .signUpBar {
-  margin-top: -2rem;
+  margin-top: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -236,6 +236,7 @@ button {
 .signInText,
 .signUpText {
   cursor: pointer;
+  margin-top: 1rem;
 }
 @media (min-width: 1024px) {
   .signInBar,
@@ -268,7 +269,7 @@ button {
 }
 
 .socialLogin {
-  margin-top: 4rem;
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -280,7 +281,7 @@ button {
   justify-content: center;
   align-items: center;
   padding: 0.75rem;
-  margin: 0.5rem;
+  margin-top: 0.5rem;
   width: 3rem;
   height: 3rem;
   background-color: #ffffff;
@@ -293,7 +294,7 @@ button {
 }
 
 .registerLink {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   color: #00cc66;
   font-weight: 600;
   text-align: center;
