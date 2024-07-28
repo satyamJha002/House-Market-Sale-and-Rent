@@ -47,24 +47,24 @@ const Slider = () => {
         <p className="exploreHeading">Recommended</p>
 
         <Swiper slidesPerView={1} pagination={{ clickable: true }}>
-          {listings.map((item) => (
+          {listings.map((data) => (
             <SwiperSlide
-              key={item.id}
-              onClick={() => navigate(`/category/${item.data.type}/${item.id}`)}
+              key={data.id}
+              onClick={() => navigate(`/category/${data.data.type}/${data.id}`)}
             >
               <div
                 style={{
-                  background: `url(${item.data.imgUrls[0]}) center no-repeat`,
+                  background: `url(${data.data.imgUrls[0]}) center no-repeat`,
                   backgroundSize: "cover",
                   width: "100%",
                   height: "300px",
                 }}
                 className="swiperSlideDiv"
               >
-                <p className="swiperSlideText">{item.data.name}</p>
+                <p className="swiperSlideText">{data.data.name}</p>
                 <p className="swiperSlidePrice">
-                  ${item.data.discountedPrice ?? item.data.regualarPrice}{" "}
-                  {item.data.type === "rent" && "/ month"}
+                  ${data.data.discountedPrice ?? data.data.regularPrice}{" "}
+                  {data.data.type === "rent" && "/ month"}
                 </p>
               </div>
             </SwiperSlide>
