@@ -5,6 +5,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { BsGoogle } from "react-icons/bs";
+import { Button, Grid } from "@mui/material";
 
 const OAuth = () => {
   const navigate = useNavigate();
@@ -38,12 +39,19 @@ const OAuth = () => {
     }
   };
   return (
-    <div className="socialLogin">
+    <Grid
+      container
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <p>Sign {location.pathname === "/sign-up" ? "up" : "in"} with</p>
-      <button className="socialIconDiv" onClick={handleGoogle}>
-        <BsGoogle className="socialIconImg" />
-      </button>
-    </div>
+      <Button sx={{ fontSize: "20px" }} onClick={handleGoogle}>
+        <BsGoogle />
+      </Button>
+    </Grid>
   );
 };
 

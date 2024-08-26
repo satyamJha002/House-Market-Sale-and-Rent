@@ -6,6 +6,19 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.config";
 import { toast } from "react-toastify";
 import OAuth from "../components/OAuth";
+import {
+  Avatar,
+  Box,
+  Button,
+  createTheme,
+  CssBaseline,
+  Grid,
+  InputAdornment,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
+import { LockOutlined } from "@mui/icons-material";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +30,8 @@ const SignIn = () => {
   const { email, password } = formData;
 
   const navigate = useNavigate();
+
+  const defaultTheme = createTheme();
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
@@ -45,83 +60,112 @@ const SignIn = () => {
   };
 
   return (
-    <>
-      <div className="pageContainer">
-        <header>
-          <p className="pageHeader">Welcome Back!</p>
-        </header>
+    <ThemeProvider theme={defaultTheme}>
+      <Grid container component="main" sx={{ height: "100vh" }}>
+        <CssBaseline />
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage:
+              "url(https://png.pngtree.com/background/20231117/original/pngtree-real-estate-market-3d-rendered-concept-of-buying-or-selling-a-picture-image_6301687.jpg)",
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "left",
+          }}
+        />
+        <Grid>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <LockOutlined />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                margin="normal"
+                fullWidth
+                id="email"
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleChange}
+                label="Email Address"
+              />
 
-        <form onSubmit={handleSubmit}>
-          <div className="emailInputDiv">
-            <input
-              id="email"
-              type="email"
-              name="email"
-              className="emailInput"
-              value={email}
-              onChange={handleChange}
-              placeholder="Enter the email"
-            />
-          </div>
-
-          <div className="passwordInputDiv">
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter the password"
-              className="passwordInput"
-              value={password}
-              name="password"
-              onChange={handleChange}
-            />
-
-            {showPassword ? (
-              <MdVisibilityOff
-                onClick={() => setShowPassword((prevState) => !prevState)}
-                style={{
-                  fontSize: 30,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 10,
-                  cursor: "pointer",
+              <TextField
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter the password"
+                value={password}
+                name="password"
+                onChange={handleChange}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      {showPassword ? (
+                        <MdVisibilityOff
+                          onClick={() =>
+                            setShowPassword((prevState) => !prevState)
+                          }
+                        />
+                      ) : (
+                        <MdVisibility
+                          onClick={() =>
+                            setShowPassword((prevState) => !prevState)
+                          }
+                        />
+                      )}
+                    </InputAdornment>
+                  ),
                 }}
               />
-            ) : (
-              <MdVisibility
-                onClick={() => setShowPassword((prevState) => !prevState)}
-                style={{
-                  fontSize: 30,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 10,
-                  cursor: "pointer",
-                }}
-              />
-            )}
-          </div>
 
-          <Link to="/forgot-password" className="forgotPasswordLink">
-            Forgot password
-          </Link>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
 
-          <div className="signInBar">
-            <p className="signInText">Sign In</p>
-            <button className="signInButton">
-              <BsArrowRightCircle fill="#fff" width="34px" height="34px" />
-            </button>
-          </div>
-        </form>
+              <Grid container>
+                <Grid item xs>
+                  <Link to="/forgot-password">Forgot password</Link>
+                </Grid>
+                <Grid item>
+                  <Link to="/sign-up">Sign Up Instead</Link>
+                </Grid>
+              </Grid>
+            </Box>
+            <OAuth />
+          </Box>
+        </Grid>
 
         {/* Google oAuth */}
-        <OAuth />
-
-        <Link to="/sign-up" className="registerLink">
-          Sign Up Instead
-        </Link>
-      </div>
-    </>
+      </Grid>
+    </ThemeProvider>
   );
 };
 

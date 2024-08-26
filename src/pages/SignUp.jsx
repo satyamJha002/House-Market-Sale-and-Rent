@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { BsArrowRightCircle } from "react-icons/bs";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase.config";
@@ -7,6 +6,19 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import OAuth from "../components/OAuth";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  CssBaseline,
+  Grid,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { LockOutlined } from "@mui/icons-material";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +30,7 @@ const SignUp = () => {
 
   const { name, email, password } = formData;
 
+  const defaultTheme = createTheme();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -59,95 +72,129 @@ const SignUp = () => {
   };
 
   return (
-    <>
-      <div className="pageContainer">
-        <header>
-          <p className="pageHeader">Welcome Back!</p>
-        </header>
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlined />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="name"
+                  type="text"
+                  name="name"
+                  value={name}
+                  onChange={handleChange}
+                  placeholder="Enter the name"
+                />
+              </Grid>
 
-        <form onSubmit={handleSubmit}>
-          <div className="nameInputDiv">
-            <input
-              id="name"
-              type="text"
-              name="name"
-              className="nameInput"
-              value={name}
-              onChange={handleChange}
-              placeholder="Enter the name"
-            />
-          </div>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={handleChange}
+                  placeholder="Enter the email"
+                />
+              </Grid>
 
-          <div className="emailInputDiv">
-            <input
-              id="email"
-              type="email"
-              name="email"
-              className="emailInput"
-              value={email}
-              onChange={handleChange}
-              placeholder="Enter the email"
-            />
-          </div>
+              <Grid item xs={12} sx={{ display: "flex", gap: 1 }}>
+                <TextField
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter the password"
+                  value={password}
+                  name="password"
+                  onChange={handleChange}
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        {showPassword ? (
+                          <MdVisibilityOff
+                            onClick={() =>
+                              setShowPassword((prevState) => !prevState)
+                            }
+                          />
+                        ) : (
+                          <MdVisibility
+                            onClick={() =>
+                              setShowPassword((prevState) => !prevState)
+                            }
+                          />
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
-          <div className="passwordInputDiv">
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter the password"
-              className="passwordInput"
-              value={password}
-              name="password"
-              onChange={handleChange}
-            />
+                {/*  */}
+              </Grid>
+              {/* <div>
+              <p>Sign Up</p>
+              <button>
+                <BsArrowRightCircle fill="#fff" width="34px" height="34px" />
+              </button>
+            </div> */}
+            </Grid>
+            <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Sign Up
+            </Button>
 
-            {showPassword ? (
-              <MdVisibilityOff
-                onClick={() => setShowPassword((prevState) => !prevState)}
-                style={{
-                  fontSize: 30,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 10,
-                  cursor: "pointer",
-                }}
-              />
-            ) : (
-              <MdVisibility
-                onClick={() => setShowPassword((prevState) => !prevState)}
-                style={{
-                  fontSize: 30,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 10,
-                  cursor: "pointer",
-                }}
-              />
-            )}
-          </div>
-
-          <Link to="/forgot-password" className="forgotPasswordLink">
-            Forgot password
-          </Link>
-
-          <div className="signUpBar">
-            <p className="signUpText">Sign Up</p>
-            <button className="signUpButton">
-              <BsArrowRightCircle fill="#fff" width="34px" height="34px" />
-            </button>
-          </div>
-        </form>
-
-        {/* Google oAuth */}
-        <OAuth />
-
-        <Link to="/sign-in" className="registerLink">
-          Already User ? Sign In .
-        </Link>
-      </div>
-    </>
+            <Grid container justifyContent="flex-end" sx={{ color: "" }}>
+              <Grid>
+                <Link to="/forgot-password" className="">
+                  Forgot password
+                </Link>
+              </Grid>
+            </Grid>
+            {/* Google oAuth */}
+            <Grid
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <OAuth />
+              <Grid>
+                <Grid item>
+                  <Link
+                    to="/sign-in"
+                    style={{ color: "blue", fontSize: "20px" }}
+                  >
+                    Already User ? Sign In .
+                  </Link>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 
