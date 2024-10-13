@@ -15,7 +15,7 @@ import { addDoc, serverTimestamp, collection } from "firebase/firestore";
 
 const CreateListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
-  const isMounted = useRef(true);
+  const isMounted = useRef(true); // yeh kya hai nhi pta
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",

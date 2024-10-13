@@ -12,7 +12,6 @@ const OAuth = () => {
   const location = useLocation();
 
   const handleGoogle = async () => {
-    1;
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);

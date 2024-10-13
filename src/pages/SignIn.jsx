@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { BsArrowRightCircle } from "react-icons/bs";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase.config";
 import { toast } from "react-toastify";

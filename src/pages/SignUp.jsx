@@ -51,6 +51,7 @@ const SignUp = () => {
       );
 
       const formDataCopy = { ...formData };
+      
       delete formDataCopy.password;
 
       formDataCopy.timesStamp = serverTimestamp();
@@ -66,7 +67,6 @@ const SignUp = () => {
       navigate("/sign-in");
     } catch (error) {
       console.error(error);
-
       toast.error("Error is coming to registering up.");
     }
   };
@@ -159,7 +159,12 @@ const SignUp = () => {
               </button>
             </div> */}
             </Grid>
-            <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Sign Up
             </Button>
 
