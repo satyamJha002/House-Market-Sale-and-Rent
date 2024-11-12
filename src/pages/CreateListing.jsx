@@ -27,6 +27,7 @@ const loadGoogleMapsScript = (apiKey) => {
 const CreateListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const isMounted = useRef(true);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -60,6 +61,18 @@ const CreateListing = () => {
   } = formData;
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isMounted) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setFormData({ ...formData, userRef: user.uid });
+        } else {
+          navigate("/sign-in");
+        }
+      });
+    }
+  }, [isMounted]);
 
   useEffect(() => {
     loadGoogleMapsScript(import.meta.env.VITE_APP_GEOCODE_API_KEY);
