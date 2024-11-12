@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { auth, db } from "../firebase.config";
 import { onAuthStateChanged } from "firebase/auth";
-import MyLocationOutlinedIcon from "@mui/icons-material";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
@@ -407,7 +407,7 @@ const CreateListing = () => {
               className="useLocationButton"
               onClick={handleUseMyLocation}
             >
-              <MyLocationOutlinedIcon />
+              <MyLocationIcon />
             </button>
           </div>
           {!geolocationEnabled && (
