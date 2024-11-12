@@ -257,7 +257,7 @@ const EditListing = () => {
       </header>
 
       <main>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="form">
           <label className="formLabel">Sale / Rent</label>
           <div className="formButtons">
             <button

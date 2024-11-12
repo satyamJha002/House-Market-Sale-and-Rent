@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { auth, db } from "../firebase.config";
 import { onAuthStateChanged } from "firebase/auth";
+import MyLocationOutlinedIcon from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
@@ -13,9 +14,18 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { addDoc, serverTimestamp, collection } from "firebase/firestore";
 
+const loadGoogleMapsScript = (apiKey) => {
+  if (!document.querySelector(`#google-maps-script`)) {
+    const script = document.createElement("script");
+    script.id = "google-maps-script";
+    script.src = `https://maps.googleapis.com/maps/api/geocode/json?key=${apiKey}&libraries=places`;
+    script.async = true;
+    document.head.appendChild(script);
+  }
+};
+
 const CreateListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
-  const isMounted = useRef(true); // yeh kya hai nhi pta
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
@@ -52,20 +62,67 @@ const CreateListing = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isMounted) {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          setFormData({ ...formData, userRef: user.uid });
-        } else {
-          navigate("/sign-in");
-        }
-      });
-    }
+    loadGoogleMapsScript(import.meta.env.VITE_APP_GEOCODE_API_KEY);
+  }, []);
 
-    return () => {
-      isMounted.current = false;
+  useEffect(() => {
+    const initAutocomplete = () => {
+      if (window.google) {
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          document.getElementById("address"),
+          { types: ["address"] }
+        );
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+          const location = place.geometry?.location;
+          setFormData((prev) => ({
+            ...prev,
+            address: place.formatted_address,
+            latitude: location?.lat() ?? 0,
+            longitude: location?.lng() ?? 0,
+          }));
+        });
+      }
     };
-  }, [isMounted]);
+    initAutocomplete();
+  }, []);
+
+  const handleUseMyLocation = async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData((prev) => ({
+            ...prev,
+            latitude,
+            longitude,
+          }));
+
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude}, ${longitude}&key=${
+              import.meta.env.VITE_APP_GEOCODE_API_KEY
+            }`
+          );
+          const data = await response.json();
+          const address = data.results[0]?.formatted_address;
+
+          if (address) {
+            setFormData((prev) => ({
+              ...prev,
+              address,
+            }));
+          } else {
+            toast.error("Could not retrieve address.");
+          }
+        },
+        () => {
+          toast.error("Location access denied");
+        }
+      );
+    } else {
+      toast.error("Geolocation is not supported by your browser");
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -95,6 +152,7 @@ const CreateListing = () => {
       );
 
       const data = await response.json();
+      console.log(data);
 
       geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
       geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
@@ -223,7 +281,18 @@ const CreateListing = () => {
       </header>
 
       <main>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="form">
+          <label className="formLabel">Name</label>
+          <input
+            className="formInputName"
+            type="text"
+            id="name"
+            value={name}
+            onChange={onMutate}
+            maxLength="32"
+            minLength="10"
+            required
+          />
           <label className="formLabel">Sale / Rent</label>
           <div className="formButtons">
             <button
@@ -239,25 +308,12 @@ const CreateListing = () => {
               type="button"
               className={type === "rent" ? "formButtonActive" : "formButton"}
               id="type"
-              value="sale"
+              value="rent"
               onClick={onMutate}
             >
               Rent
             </button>
           </div>
-
-          <label className="formLabel">Name</label>
-          <input
-            className="formInputName"
-            type="text"
-            id="name"
-            value={name}
-            onChange={onMutate}
-            maxLength="32"
-            minLength="10"
-            required
-          />
-
           <div className="formRooms flex">
             <div>
               <label className="formLabel">Bedrooms</label>
@@ -286,7 +342,6 @@ const CreateListing = () => {
               />
             </div>
           </div>
-
           <label className="formLabel">Parking spot</label>
           <div className="formButtons">
             <button
@@ -312,7 +367,6 @@ const CreateListing = () => {
               No
             </button>
           </div>
-
           <label className="formLabel">Furnished</label>
           <div className="formButtons">
             <button
@@ -338,17 +392,24 @@ const CreateListing = () => {
               No
             </button>
           </div>
-
-          <label className="formLabel">Address</label>
-          <textarea
-            className="formInputAddress"
-            type="text"
-            id="address"
-            value={address}
-            onChange={onMutate}
-            required
-          />
-
+          <label className="formLabel">Address</label>``
+          <div className="location-address">
+            <textarea
+              className="formInputAddress"
+              type="text"
+              id="address"
+              value={address}
+              onChange={onMutate}
+              required
+            />
+            <button
+              type="button"
+              className="useLocationButton"
+              onClick={handleUseMyLocation}
+            >
+              <MyLocationOutlinedIcon />
+            </button>
+          </div>
           {!geolocationEnabled && (
             <div className="formLatLng flex">
               <div>
@@ -375,7 +436,6 @@ const CreateListing = () => {
               </div>
             </div>
           )}
-
           <label className="formLabel">Offer</label>
           <div className="formButtons">
             <button
@@ -399,7 +459,6 @@ const CreateListing = () => {
               No
             </button>
           </div>
-
           <label className="formLabel">Regular Price</label>
           <div className="formPriceDiv">
             <input
@@ -414,7 +473,6 @@ const CreateListing = () => {
             />
             {type === "rent" && <p className="formPriceText">$ / Month</p>}
           </div>
-
           {offer && (
             <>
               <label className="formLabel">Discounted Price</label>
@@ -430,7 +488,6 @@ const CreateListing = () => {
               />
             </>
           )}
-
           <label className="formLabel">Images</label>
           <p className="imagesInfo">
             The first image will be the cover (max 6).

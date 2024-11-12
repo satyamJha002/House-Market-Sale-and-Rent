@@ -723,13 +723,27 @@ button {
   padding: 0;
 }
 
+.form {
+  background-color: #0b0b0b;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0 auto;
+  justify-content: safe;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  box-shadow: 10px 10px 20px #000000;
+}
+
 .formLabel {
   font-weight: 600;
   margin-top: 1rem;
   display: block;
+  color: white;
 }
 
-.formButtons {
+form .formButtons {
   display: flex;
 }
 
@@ -777,14 +791,11 @@ button {
 
 .formInputName {
   padding: 0.9rem 1rem;
-  width: 90%;
-  max-width: 326px;
 }
 
 .formInputAddress {
   padding: 0.9rem 1rem;
-  width: 90%;
-  max-width: 326px;
+  width: 100%;
 }
 
 .formPriceDiv {
@@ -800,11 +811,13 @@ button {
 .imagesInfo {
   font-size: 0.9rem;
   opacity: 0.75;
+  color: white;
 }
 
 .formInputFile {
   width: 100%;
 }
+
 .formInputFile::-webkit-file-upload-button {
   background-color: #00cc66;
   border: none;
@@ -813,6 +826,21 @@ button {
   padding: 0.5rem 0.75rem;
   border-radius: 1rem;
   margin-right: 1rem;
+}
+
+.location-address {
+  display: flex;
+}
+
+.useLocationButton {
+  background: none;
+  cursor: pointer;
+  color: white;
+  border-radius: 1rem;
+}
+
+.useLocationButton:hover {
+  background-color: #00cc66;
 }
 
 .createListingButton {
@@ -831,4 +859,14 @@ button {
   margin-left: 1rem;
   font-size: 0.8rem;
   opacity: 0.75;
+}
+
+@media (max-width: 400px) {
+  form .formButtons {
+    display: block;
+  }
+
+  .useLocationButton {
+    display: block;
+  }
 }
