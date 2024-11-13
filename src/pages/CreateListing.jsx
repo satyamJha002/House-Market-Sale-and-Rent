@@ -18,7 +18,7 @@ const loadGoogleMapsScript = (apiKey) => {
   if (!document.querySelector(`#google-maps-script`)) {
     const script = document.createElement("script");
     script.id = "google-maps-script";
-    script.src = `https://maps.googleapis.com/maps/api/geocode/json?key=${apiKey}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api?key=${apiKey}&libraries=places`;
     script.async = true;
     document.head.appendChild(script);
   }
