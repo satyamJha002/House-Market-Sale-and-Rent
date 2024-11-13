@@ -14,13 +14,19 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { addDoc, serverTimestamp, collection } from "firebase/firestore";
 
-const loadGoogleMapsScript = (apiKey) => {
+const loadGoogleMapsScript = (apiKey, callback) => {
   if (!document.querySelector(`#google-maps-script`)) {
     const script = document.createElement("script");
     script.id = "google-maps-script";
-    script.src = `https://maps.googleapis.com/maps/api?key=${apiKey}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
     script.async = true;
+    script.defer = true;
+    script.loading = "lazy";
+
+    script.onload = callback;
     document.head.appendChild(script);
+  } else if (callback) {
+    callback();
   }
 };
 
@@ -28,6 +34,7 @@ const CreateListing = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const isMounted = useRef(true);
+  const addressInputRef = useRef(null);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -74,30 +81,30 @@ const CreateListing = () => {
     }
   }, [isMounted]);
 
-  useEffect(() => {
-    loadGoogleMapsScript(import.meta.env.VITE_APP_GEOCODE_API_KEY);
-  }, []);
+  const initAutocomplete = () => {
+    if (window.google && addressInputRef.current) {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        addressInputRef.current,
+        { types: ["address"] }
+      );
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        const location = place.geometry?.location;
+        setFormData((prev) => ({
+          ...prev,
+          address: place.formatted_address,
+          latitude: location?.lat() ?? 0,
+          longitude: location?.lng() ?? 0,
+        }));
+      });
+    }
+  };
 
   useEffect(() => {
-    const initAutocomplete = () => {
-      if (window.google) {
-        const autocomplete = new window.google.maps.places.Autocomplete(
-          document.getElementById("address"),
-          { types: ["address"] }
-        );
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          const location = place.geometry?.location;
-          setFormData((prev) => ({
-            ...prev,
-            address: place.formatted_address,
-            latitude: location?.lat() ?? 0,
-            longitude: location?.lng() ?? 0,
-          }));
-        });
-      }
-    };
-    initAutocomplete();
+    loadGoogleMapsScript(
+      import.meta.env.VITE_APP_GEOCODE_API_KEY,
+      initAutocomplete
+    );
   }, []);
 
   const handleUseMyLocation = async () => {
@@ -407,8 +414,9 @@ const CreateListing = () => {
           </div>
           <label className="formLabel">Address</label>``
           <div className="location-address">
-            <textarea
+            <input
               className="formInputAddress"
+              ref={addressInputRef}
               type="text"
               id="address"
               value={address}
