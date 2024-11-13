@@ -724,7 +724,7 @@ button {
 }
 
 .form {
-  background-color: #0b0b0b;
+  background-color: #888383;
   max-width: 500px;
   display: flex;
   flex-direction: column;
@@ -740,7 +740,7 @@ button {
   font-weight: 600;
   margin-top: 1rem;
   display: block;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 form .formButtons {
